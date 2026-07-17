@@ -1,0 +1,104 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+  background: #f3f5f9;
+}
+
+.page {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.login-card {
+  width: min(360px, 100%);
+  display: grid;
+  gap: 14px;
+  padding: 24px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
+}
+
+.tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.tab {
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 10px 12px;
+  background: #f9fafb;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.tab.active {
+  background: #eaf2ff;
+  border-color: #8db2ff;
+  color: #1454c7;
+  font-weight: 700;
+}
+
+.login-card h1 {
+  margin: 0 0 6px;
+  font-size: 28px;
+}
+
+.login-card label {
+  display: grid;
+  gap: 6px;
+  font-size: 14px;
+  color: #374151;
+}
+
+.login-card input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 15px;
+}
+
+.login-card button[type="submit"] {
+  margin-top: 4px;
+  border: 0;
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-size: 15px;
+  background: #1463e8;
+  color: #fff;
+  cursor: pointer;
+}
+
+.message {
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.message.ok {
+  background: #e8f7ec;
+  color: #166534;
+}
+
+.message.err {
+  background: #fef2f2;
+  color: #b91c1c;
+}
