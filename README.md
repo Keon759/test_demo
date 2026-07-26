@@ -5,14 +5,14 @@
 
 ---
 
-## 📌 项目背景与目的 (Project Overview)
+## 📌 Project Overview--项目背景与目的
 
 在无内部大型业务系统权限的情况下，本项目搭建了一个基于 **React + Flask** 的轻量级登录注册 Web 应用作为**自动化测试沙盒（PoC System）**。
 通过在系统中**刻意预埋业务规则类缺陷（Bug Injection）**（如用户名长度限制缺失），验证 AI 自动化测试插件从需求解析到缺陷自动提交的端到端可行性。
 
 ---
 
-## 🛠️ 项目架构与包含模块 (What's Included)
+## 🛠️ What's Included
 
 * **`backend/`**：基于 Flask + SQLite 实现的后端 API（提供用户注册、登录校验及测试数据存储功能）。
 * **`frontend/`**：基于 React + Ant Design + Axios 构建的前端 UI 界面（响应式控制台看板与交互界面）。
@@ -25,7 +25,7 @@
 
 ---
 
-## 🚀 快速启动指南 (Quick Start)
+## 🚀 Quick Start--快速启动指南
 
 ### 选项一：使用一键脚本运行（推荐）
 
