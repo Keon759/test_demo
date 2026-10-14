@@ -1,6 +1,7 @@
 """Generate executable plans without executing model-written code."""
 
 import json
+import hashlib
 import os
 import re
 from pathlib import Path
@@ -139,7 +140,7 @@ def offline_plan(prd):
     return validate_plan({"requirements": requirements, "cases": cases}, prd)
 
 
-def openai_plan(prd, *, transport=None):
+def openai_plan(prd, *, transport=None, metadata=None):
     """One explicit Responses API request; no silent fallback to offline mode."""
     key, model = os.environ.get("OPENAI_API_KEY"), os.environ.get("OPENAI_MODEL")
     if not key or not model:
@@ -154,6 +155,8 @@ def openai_plan(prd, *, transport=None):
                       headers={"Authorization": "Bearer " + key, "Content-Type": "application/json"})
     try:
         with (transport or urlopen)(request, timeout=90) as response:
+            headers = getattr(response, "headers", {})
+            request_id = headers.get("x-request-id")
             result = json.load(response)
     except HTTPError as exc:
         raise ValueError(f"OpenAI request failed (HTTP {exc.code}); check account/model access") from None
@@ -174,4 +177,11 @@ def openai_plan(prd, *, transport=None):
         plan = json.loads("".join(fragments))
     except json.JSONDecodeError:
         raise ValueError("Model did not return a JSON test plan") from None
-    return validate_plan(plan, prd)
+    plan = validate_plan(plan, prd)
+    if metadata is not None:
+        # Preserve only diagnostic identifiers and usage; never credentials or headers.
+        metadata.update({"provider": "openai", "requested_model": model,
+                         "returned_model": result.get("model"), "response_id": result.get("id"),
+                         "request_id": request_id, "usage": result.get("usage"),
+                         "prompt_sha256": hashlib.sha256(request_body["instructions"].encode()).hexdigest()})
+    return plan

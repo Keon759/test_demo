@@ -85,9 +85,15 @@ def test_openai_request_schema_and_validated_response(prd, monkeypatch):
         assert body["text"]["format"]["strict"] is True
         assert body["model"] == "unit-test-model"
         assert "known injected bugs" in body["instructions"]
-        return io.StringIO(json.dumps({"status": "completed", "output": [{"type": "message",
+        return io.StringIO(json.dumps({"id": "resp_mock", "model": "unit-test-model",
+            "usage": {"input_tokens": 100, "output_tokens": 300}, "status": "completed", "output": [{"type": "message",
             "content": [{"type": "output_text", "text": json.dumps(expected)}]}]}))
-    assert openai_plan(prd, transport=transport) == expected
+    provenance = {}
+    assert openai_plan(prd, transport=transport, metadata=provenance) == expected
+    assert provenance["response_id"] == "resp_mock"
+    assert provenance["usage"]["output_tokens"] == 300
+    assert len(provenance["prompt_sha256"]) == 64
+    assert "unit-test-placeholder" not in json.dumps(provenance)
 
 
 @pytest.mark.parametrize("response", [

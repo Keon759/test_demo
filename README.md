@@ -101,12 +101,20 @@ npm --prefix frontend run dev
 
 离线演示不会发起模型请求。选择 `--provider openai` 才会调用真实 API，需要自己的 API 密钥和支持结构化输出的模型，可能产生 API 费用。
 
-PowerShell 环境配置示例，替换为你自己的配置，不要把真实密钥写进仓库：
+Windows 推荐使用本机验证入口，运行时输入可用的模型 ID 和密钥。模型 ID 留空默认采用官方入门示例的 `gpt-6-astra`；账户访问权限以实际 API 返回为准。密钥输入隐藏，仅放入当前进程环境，结束后恢复；不会写入文件或发送到 GitHub：
 
 ```powershell
-$env:OPENAI_API_KEY = '<your-api-key>'
-$env:OPENAI_MODEL = '<your-supported-model-id>'
-.\backend\.venv\Scripts\python.exe -m backend.run_pipeline --provider openai --output artifacts/model-run
+.\run-model-validation.ps1
+```
+
+脚本只调用一次模型生成计划，再用该计划执行缺陷模式与修复回归，不自动重试付费请求。结果保存在新的 `artifacts/model-时间戳/` 目录，包含调用编号、模型、Token 使用、计划指纹、两次执行记录和验证结论。它会检查是否真的检出了用户名长度缺陷，而不是只看用例通过率。现有证据目录不会被覆盖。
+
+尚无密钥时，先在 [OpenAI API 控制台](https://platform.openai.com/api-keys) 创建；按账户要求配置 API 计费。密钥不应发送到聊天、前端代码或仓库。[官方入门说明](https://developers.openai.com/api/docs/quickstart)
+
+已通过环境变量配置时，也可使用：
+
+```powershell
+.\backend\.venv\Scripts\python.exe scripts/validate_model.py
 ```
 
 程序使用 [OpenAI Responses API 结构化输出](https://developers.openai.com/api/docs/guides/structured-outputs?api-mode=responses)，一次调用返回需求与用例计划；本地校验结构、需求原文引用、用例关联及覆盖后再执行。未配置密钥、模型拒绝、响应不完整或计划无效时会明确停止，不会悄悄切换离线模式。
