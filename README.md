@@ -125,6 +125,8 @@ Windows 推荐使用本机验证入口，只提示输入密钥。模型名自动
 
 ## 验证与目录
 
+出现 HTTP 429 时，程序会区分已知错误代码：`insufficient_quota` / `credit_balance_exhausted` 提示检查 API 计费与余额；项目/组织额度代码提示检查 Limits；`rate_limit_exceeded` / `slow_down` 提示遵循 Retry-After 或等待限流恢复。不会把所有 429 都解释为同一种原因，也不会自动重复请求。[官方错误说明](https://developers.openai.com/api/docs/guides/error-codes)
+
 ```bash
 python -m pytest -q
 npm --prefix frontend run build

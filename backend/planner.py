@@ -140,6 +140,46 @@ def offline_plan(prd):
     return validate_plan({"requirements": requirements, "cases": cases}, prd)
 
 
+def describe_api_error(exc):
+    """Explain known error codes without echoing response messages or secrets."""
+    try:
+        body = json.loads(exc.read(65536))
+        error = body.get("error", {}) if isinstance(body, dict) else {}
+        if not isinstance(error, dict):
+            error = {}
+    except (ValueError, OSError):
+        error = {}
+    known_codes = {
+        "insufficient_quota", "credit_balance_exhausted", "organization_spend_limit_exceeded",
+        "project_spend_limit_exceeded", "organization_usage_limit_exceeded",
+        "rate_limit_exceeded", "slow_down", "rate_limit_error",
+        "invalid_api_key", "model_not_found", "permission_denied", "invalid_request_error",
+    }
+    code = error.get("code")
+    if not isinstance(code, str) or code not in known_codes:
+        code = error.get("type")
+    if not isinstance(code, str) or code not in known_codes:
+        code = "unknown"
+    prefix = f"OpenAI request failed (HTTP {exc.code}; code {code}). "
+    if code == "credit_balance_exhausted":
+        return prefix + "API prepaid credits are exhausted; check Billing before retrying."
+    if code in {"organization_spend_limit_exceeded", "project_spend_limit_exceeded", "organization_usage_limit_exceeded"}:
+        return prefix + "The indicated account/project limit was reached; check Limits before retrying."
+    if code == "insufficient_quota":
+        return prefix + "API billing/credits or quota are unavailable; check Billing and Limits before retrying."
+    if code in {"rate_limit_exceeded", "slow_down", "rate_limit_error"}:
+        retry_after = (exc.headers or {}).get("Retry-After", "")
+        wait = f"Wait at least {retry_after} seconds before retrying." if re.fullmatch(r"\d{1,7}(?:\.\d{1,3})?", retry_after) else "Check model rate limits and wait before retrying."
+        return prefix + wait + " No automatic retry was made."
+    if exc.code == 429:
+        return prefix + "Check Billing and model rate limits; the response did not identify a known cause."
+    if exc.code == 401:
+        return prefix + "Check that the key is active and copied correctly."
+    if exc.code == 403:
+        return prefix + "Check key permissions and project/model access."
+    return prefix + "Check request configuration and account/model access."
+
+
 def openai_plan(prd, *, transport=None, metadata=None):
     """One explicit Responses API request; no silent fallback to offline mode."""
     key, model = os.environ.get("OPENAI_API_KEY"), os.environ.get("OPENAI_MODEL")
@@ -162,7 +202,7 @@ def openai_plan(prd, *, transport=None, metadata=None):
             request_id = headers.get("x-request-id")
             result = json.load(response)
     except HTTPError as exc:
-        raise ValueError(f"OpenAI request failed (HTTP {exc.code}); check account/model access") from None
+        raise ValueError(describe_api_error(exc)) from None
     except (URLError, TimeoutError, OSError, json.JSONDecodeError):
         raise ValueError("OpenAI request failed or returned invalid JSON; no offline fallback was used") from None
     if not isinstance(result, dict) or result.get("status") != "completed":
