@@ -1,0 +1,199 @@
+[
+  {
+    "id": "TC-REG-001",
+    "title": "合法用户注册成功",
+    "requirement_ids": [
+      "REG-006"
+    ],
+    "endpoint": "/api/register",
+    "setup": [],
+    "payload": {
+      "username": "uuuuuuuu",
+      "password": "ppppppppp"
+    },
+    "expected_status": 201
+  },
+  {
+    "id": "TC-REG-002",
+    "title": "空用户名不可注册",
+    "requirement_ids": [
+      "REG-001"
+    ],
+    "endpoint": "/api/register",
+    "setup": [],
+    "payload": {
+      "username": "",
+      "password": "ppppppppp"
+    },
+    "expected_status": 400
+  },
+  {
+    "id": "TC-REG-003",
+    "title": "空密码不可注册",
+    "requirement_ids": [
+      "REG-004"
+    ],
+    "endpoint": "/api/register",
+    "setup": [],
+    "payload": {
+      "username": "uuuuuuuu",
+      "password": ""
+    },
+    "expected_status": 400
+  },
+  {
+    "id": "TC-REG-004",
+    "title": "密码低于最小长度",
+    "requirement_ids": [
+      "REG-005"
+    ],
+    "endpoint": "/api/register",
+    "setup": [],
+    "payload": {
+      "username": "uuuuuuuu",
+      "password": "ppppp"
+    },
+    "expected_status": 400
+  },
+  {
+    "id": "TC-REG-005",
+    "title": "用户名低于最小长度",
+    "requirement_ids": [
+      "REG-002"
+    ],
+    "endpoint": "/api/register",
+    "setup": [],
+    "payload": {
+      "username": "uuuuu",
+      "password": "ppppppppp"
+    },
+    "expected_status": 400
+  },
+  {
+    "id": "TC-REG-006",
+    "title": "重复用户名不可注册",
+    "requirement_ids": [
+      "REG-003"
+    ],
+    "endpoint": "/api/register",
+    "setup": [
+      {
+        "username": "uuuuuuuu",
+        "password": "ppppppppp"
+      }
+    ],
+    "payload": {
+      "username": "uuuuuuuu",
+      "password": "ppppppppp"
+    },
+    "expected_status": 409
+  },
+  {
+    "id": "TC-REG-007",
+    "title": "用户名恰好达到最小长度",
+    "requirement_ids": [
+      "REG-002"
+    ],
+    "endpoint": "/api/register",
+    "setup": [],
+    "payload": {
+      "username": "uuuuuu",
+      "password": "ppppppppp"
+    },
+    "expected_status": 201
+  },
+  {
+    "id": "TC-REG-008",
+    "title": "密码恰好达到最小长度",
+    "requirement_ids": [
+      "REG-005"
+    ],
+    "endpoint": "/api/register",
+    "setup": [],
+    "payload": {
+      "username": "uuuuuuuu",
+      "password": "pppppp"
+    },
+    "expected_status": 201
+  },
+  {
+    "id": "TC-LOG-001",
+    "title": "合法用户登录成功",
+    "requirement_ids": [
+      "LOG-004"
+    ],
+    "endpoint": "/api/login",
+    "setup": [
+      {
+        "username": "uuuuuuuu",
+        "password": "ppppppppp"
+      }
+    ],
+    "payload": {
+      "username": "uuuuuuuu",
+      "password": "ppppppppp"
+    },
+    "expected_status": 200
+  },
+  {
+    "id": "TC-LOG-002",
+    "title": "错误密码不可登录",
+    "requirement_ids": [
+      "LOG-003"
+    ],
+    "endpoint": "/api/login",
+    "setup": [
+      {
+        "username": "uuuuuuuu",
+        "password": "ppppppppp"
+      }
+    ],
+    "payload": {
+      "username": "uuuuuuuu",
+      "password": "wrong-password"
+    },
+    "expected_status": 401
+  },
+  {
+    "id": "TC-LOG-003",
+    "title": "未注册用户不可登录",
+    "requirement_ids": [
+      "LOG-003"
+    ],
+    "endpoint": "/api/login",
+    "setup": [],
+    "payload": {
+      "username": "uuuuuuuu",
+      "password": "ppppppppp"
+    },
+    "expected_status": 401
+  },
+  {
+    "id": "TC-LOG-004",
+    "title": "空用户名不可登录",
+    "requirement_ids": [
+      "LOG-001"
+    ],
+    "endpoint": "/api/login",
+    "setup": [],
+    "payload": {
+      "username": "",
+      "password": "ppppppppp"
+    },
+    "expected_status": 400
+  },
+  {
+    "id": "TC-LOG-005",
+    "title": "空密码不可登录",
+    "requirement_ids": [
+      "LOG-002"
+    ],
+    "endpoint": "/api/login",
+    "setup": [],
+    "payload": {
+      "username": "uuuuuuuu",
+      "password": ""
+    },
+    "expected_status": 400
+  }
+]

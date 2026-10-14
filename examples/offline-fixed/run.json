@@ -1,0 +1,19 @@
+{
+  "metadata": {
+    "generated_at": "2026-10-14T03:10:39.369967+00:00",
+    "provider": "replay",
+    "model": null,
+    "inject_bug": false,
+    "prd_sha256": "1d0ab333feaa252abe1d264a992e6d18b4aa348a5d4c1fb5d6f4631a1f94acf2",
+    "execution": "flask_test_client",
+    "bug_delivery": "local_artifact_only"
+  },
+  "summary": {
+    "requirements": 10,
+    "total": 13,
+    "passed": 13,
+    "failed": 0,
+    "errors": 0,
+    "bugs": 0
+  }
+}

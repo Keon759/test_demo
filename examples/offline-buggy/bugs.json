@@ -1,0 +1,29 @@
+[
+  {
+    "id": "BUG-803FA60AA1",
+    "title": "用户名低于最小长度：实际结果不符合预期",
+    "state": "open",
+    "delivery": "local_artifact_only",
+    "requirement_ids": [
+      "REG-002"
+    ],
+    "case_ids": [
+      "TC-REG-005"
+    ],
+    "source_quotes": [
+      "用户名长度必须大于等于 6 位。"
+    ],
+    "endpoint": "/api/register",
+    "setup": [],
+    "payload": {
+      "username": "uuuuu",
+      "password": "ppppppppp"
+    },
+    "expected_status": 400,
+    "actual_status": 201,
+    "actual_body": {
+      "message": "注册成功",
+      "username": "uuuuu"
+    }
+  }
+]

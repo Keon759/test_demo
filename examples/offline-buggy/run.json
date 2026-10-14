@@ -1,0 +1,19 @@
+{
+  "metadata": {
+    "generated_at": "2026-10-14T03:10:38.389977+00:00",
+    "provider": "offline",
+    "model": null,
+    "inject_bug": true,
+    "prd_sha256": "1d0ab333feaa252abe1d264a992e6d18b4aa348a5d4c1fb5d6f4631a1f94acf2",
+    "execution": "flask_test_client",
+    "bug_delivery": "local_artifact_only"
+  },
+  "summary": {
+    "requirements": 10,
+    "total": 13,
+    "passed": 12,
+    "failed": 1,
+    "errors": 0,
+    "bugs": 1
+  }
+}

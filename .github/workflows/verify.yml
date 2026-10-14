@@ -1,0 +1,38 @@
+name: Verify reproducible prototype
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  backend:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python: ['3.12']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - run: python -m pip install -r backend/requirements.txt
+      - run: python -m pytest -q
+      - run: python -m backend.run_pipeline --output artifacts/buggy
+      - run: python -m backend.run_pipeline --fixed --plan artifacts/buggy/plan.json --output artifacts/fixed --fail-on-defect
+      - uses: actions/upload-artifact@v4
+        with:
+          name: offline-results-${{ matrix.os }}
+          path: artifacts/
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - run: npm run build

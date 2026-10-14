@@ -1,49 +1,16 @@
 $ErrorActionPreference = "Stop"
-
-$root = Split-Path -Parent $MyInvocation.MyCommand.Path
-$backend = Join-Path $root "backend"
-$frontend = Join-Path $root "frontend"
-$backendVenv = Join-Path $backend ".venv"
-$backendPython = Join-Path $backendVenv "Scripts\python.exe"
-$frontendNodeModules = Join-Path $frontend "node_modules"
-
-function Start-Window {
-    param(
-        [string]$Command
-    )
-
-    Start-Process powershell -ArgumentList @(
-        "-NoExit",
-        "-ExecutionPolicy", "Bypass",
-        "-Command", $Command
-    ) -WindowStyle Normal
-}
-
-if (-not (Test-Path $backendVenv)) {
-    Write-Host "正在创建后端虚拟环境..."
-    python -m venv $backendVenv
-}
-
-Write-Host "正在确保后端依赖可用..."
-& $backendPython -m pip install -r (Join-Path $backend "requirements.txt")
-
-$backendCommand = "Set-Location '$backend'; & '$backendPython' app.py"
-Start-Window -Command $backendCommand
-
-if (Get-Command npm -ErrorAction SilentlyContinue) {
-    if (-not (Test-Path $frontendNodeModules)) {
-        Write-Host "正在安装前端依赖..."
-        Push-Location $frontend
-        npm install
-        Pop-Location
+$demoRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
+$demoPython = Join-Path $demoRoot "backend\.venv\Scripts\python.exe"
+Push-Location $demoRoot
+try {
+    if (-not (Get-Command node -ErrorAction SilentlyContinue)) { throw "Install Node.js 20.19+ or 22.12+ first." }
+    if (-not (Test-Path -LiteralPath $demoPython)) {
+        python -m venv backend/.venv
+        if ($LASTEXITCODE -ne 0) { throw "Could not create Python environment." }
     }
-
-    $frontendCommand = "Set-Location '$frontend'; npm run dev"
-    Start-Window -Command $frontendCommand
-    Start-Sleep -Seconds 5
-    Start-Process "http://127.0.0.1:5173/"
-}
-else {
-    Write-Host "未检测到 npm，已只启动后端页面。"
-    Start-Process "http://127.0.0.1:5000/"
-}
+    & $demoPython -m pip install -r backend/requirements.txt
+    if ($LASTEXITCODE -ne 0) { throw "Backend dependency installation failed." }
+    npm.cmd --prefix frontend ci
+    if ($LASTEXITCODE -ne 0) { throw "Frontend dependency installation failed." }
+    & $demoPython scripts/start_demo.py
+} finally { Pop-Location }

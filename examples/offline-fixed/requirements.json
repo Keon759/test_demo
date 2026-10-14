@@ -1,0 +1,62 @@
+[
+  {
+    "id": "REG-001",
+    "module": "注册",
+    "description": "用户名不能为空",
+    "source_quote": "用户名不能为空。"
+  },
+  {
+    "id": "REG-002",
+    "module": "注册",
+    "description": "用户名长度必须大于等于 6 位",
+    "source_quote": "用户名长度必须大于等于 6 位。"
+  },
+  {
+    "id": "REG-003",
+    "module": "注册",
+    "description": "用户名不可重复",
+    "source_quote": "用户名不可重复。"
+  },
+  {
+    "id": "REG-004",
+    "module": "注册",
+    "description": "密码不能为空",
+    "source_quote": "密码不能为空。"
+  },
+  {
+    "id": "REG-005",
+    "module": "注册",
+    "description": "密码长度必须大于等于 6 位",
+    "source_quote": "密码长度必须大于等于 6 位。"
+  },
+  {
+    "id": "REG-006",
+    "module": "注册",
+    "description": "注册成功后返回成功提示",
+    "source_quote": "注册成功后返回成功提示。"
+  },
+  {
+    "id": "LOG-001",
+    "module": "登录",
+    "description": "用户名不能为空",
+    "source_quote": "用户名不能为空。"
+  },
+  {
+    "id": "LOG-002",
+    "module": "登录",
+    "description": "密码不能为空",
+    "source_quote": "密码不能为空。"
+  },
+  {
+    "id": "LOG-003",
+    "module": "登录",
+    "description": "用户名或密码错误时返回错误提示",
+    "source_quote": "用户名或密码错误时返回错误提示。"
+  },
+  {
+    "id": "LOG-004",
+    "module": "登录",
+    "description": "登录成功后进入登录成功页面",
+    "source_quote": "登录成功后进入登录成功页面。"
+  }
+]
