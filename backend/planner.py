@@ -145,6 +145,9 @@ def openai_plan(prd, *, transport=None, metadata=None):
     key, model = os.environ.get("OPENAI_API_KEY"), os.environ.get("OPENAI_MODEL")
     if not key or not model:
         raise ValueError("OpenAI mode requires OPENAI_API_KEY and OPENAI_MODEL environment variables")
+    model = model.strip()
+    if model.lower().startswith("sk-") or model == key.strip() or not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._:-]{0,127}", model):
+        raise ValueError("OPENAI_MODEL must be a model ID, not an API key; use the default model setting")
     request_body = {"model": model, "store": False,
                     "instructions": PROMPT.read_text(encoding="utf-8"), "input": prd,
                     "max_output_tokens": 10000,

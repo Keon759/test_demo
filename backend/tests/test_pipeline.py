@@ -115,6 +115,17 @@ def test_openai_mode_requires_explicit_configuration(prd, monkeypatch):
         run_pipeline(prd, provider="openai")
 
 
+@pytest.mark.parametrize("model", ["sk-proj-unit-test-placeholder", "SK-test-placeholder", "same-placeholder", "bad model name"])
+def test_reject_key_as_model_before_network_request(prd, monkeypatch, model):
+    monkeypatch.setenv("OPENAI_API_KEY", "same-placeholder")
+    monkeypatch.setenv("OPENAI_MODEL", model)
+    def must_not_call(*args, **kwargs):
+        pytest.fail("Invalid model must be rejected before any network request")
+    with pytest.raises(ValueError) as captured:
+        openai_plan(prd, transport=must_not_call)
+    assert model not in str(captured.value)
+
+
 def test_browser_pipeline_does_not_modify_user_database(tmp_path):
     app = create_app(str(tmp_path / "real.db"))
     with app.test_client() as client:

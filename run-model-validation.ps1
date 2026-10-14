@@ -10,9 +10,12 @@ $resultCode = 2
 Push-Location $demoRoot
 try {
     if (-not $Model) { $Model = $env:OPENAI_MODEL }
-    if (-not $Model) { $Model = Read-Host "OpenAI model ID (Enter uses gpt-6-astra, the official quickstart example)" }
     if ([string]::IsNullOrWhiteSpace($Model)) { $Model = "gpt-6-astra" }
     $env:OPENAI_MODEL = $Model.Trim()
+    if ($env:OPENAI_MODEL -match '^sk-' -or -not ($env:OPENAI_MODEL -match '^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$')) {
+        throw "The model field must contain a model ID, not an API key. Run without -Model to use the default."
+    }
+    Write-Host "Model configured automatically. Only paste the API key at the hidden prompt below."
     if (-not $env:OPENAI_API_KEY) {
         $secretInput = Read-Host "Paste your OpenAI API key (input is hidden; not saved)" -AsSecureString
         $keyPointer = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($secretInput)
